@@ -1,0 +1,54 @@
+{
+  "name": "phy-engine",
+  "version": "0.5.6",
+  "description": "JavaScript 3D Rolly Game for three.js",
+  "type": "module",
+  "main": "./build/Phy.cjs",
+  "module": "./build/Phy.module.js",
+  "exports": {
+    ".": {
+      "import": "./build/Phy.module.js",
+      "require": "./build/Phy.cjs"
+    },
+    "./build/*": "./build/*",
+    "./compact/*": "./compact/*"
+  },
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "compact",
+    "build"
+  ],
+  "directories": {
+    "demos": "demos"
+  },
+  "scripts": {
+    "start": "http-server -p 8081",
+    "build": "npm run phy",
+    "main": "rollup -c rollup/rollup.config.main.js",
+    "smoke": "rollup -c rollup/extra.smoke.js",
+    "fracture": "rollup -c rollup/extra.fracture.js",
+    "codeflask": "rollup -c rollup/extra.codeflask.js",
+    "phy": "rollup -c rollup/rollup.config.phy.js"
+  },
+  "keywords": [
+    "physx",
+    "three",
+    "physics",
+    "engine"
+  ],
+  "author": "Yulice",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "rollup": "^4.6.0",
+    "three": "^0.175.0"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "https-server": "^0.1.2",
+    "phy-engine": "^0.5.6"
+  }
+}

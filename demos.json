@@ -1,0 +1,40 @@
+{
+    "Basic": [ 
+        "benchmark", "start", "basic", "joint", "capsule", "compound", "bridge", "ray_car", "alpine",
+        "gears", "terrain", "character", "kinematic", "random", "tower",
+        "gravity", "evangelion", "simple",
+        "blast", "skeleton", "skeleton_old", "material", "keva", "test",
+        "dragon", "raycast", "human", "player", "auto_ragdoll", "badaboum"
+    ],
+    "Dev" : [ 
+        "spring", "cloth", "gears2", "mass", "empty", "empty2", "empty3",
+        "car", "collision", "buttons", "robot_arm", "pinball","bullet", "build", 
+        "kaneda", "vehicle3", "mesh", "break", "stacking",  "house", "direct",
+        "solver", "wall", "skylab", "colors", "barbados", "barbados2", "blob", "coin"
+    ],
+    "Advanced" : [ 
+        "diamond", "ragdoll", "chess", "million", "museum"
+    ],
+
+    "PHYSX": [
+        "vehicle" , "vehicle4", "robot"
+    ],
+
+    "AMMO": [
+        "vehicle", "vehicle4"
+    ],
+
+    "OIMO": [],
+    "RAPIER": [],
+    "CANNON": [],
+    "JOLT": [],
+    "HAVOK": [],
+
+    "Envmap": [ 
+        "null", "cube","basic", "factory", "studio", "beach", "tomoco",
+        "tatami", "box", "park", "color", "room", "tokyo",
+        "gallery", "river", "cave", "histo", "bed", "forest",
+        "small", "garden", "port", "querry", "bridge", 
+        "point", "golf", "esplanade", "clear", "swiss", "alien", "pendora", "lobe", "room2", "photo"
+    ]
+}
