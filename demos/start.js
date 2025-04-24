@@ -21,7 +21,6 @@ let colors = [
 
 let export_balls = parseInt(document.getElementById("export_balls").value, 10) || 0;
 let import_balls = parseInt(document.getElementById("import_balls").value, 10) || 0;
-let total_balls = parseInt(document.getElementById("total_balls").value, 10) || 0;
 
 document.getElementById('myModal').addEventListener('hidden.bs.modal', () => {
     document.body.focus(); // Move focus to the body
@@ -30,88 +29,54 @@ document.getElementById('myModal').addEventListener('hidden.bs.modal', () => {
 let debounceTimeout;
 
 function startGame() {
-    console.log('Starting the game...');
-    document.getElementById('controlpan').style.display = 'none';
-    Main.start({
-        type: 'PHYSX', // Specify the physics engine
-        useWebgpu: false // Enable or disable WebGPU rendering
-    });
 
-    // Manually hide the modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('myModal'));
-    if (modal) {
-        modal.hide();
-    } else {
-        console.error('Modal instance not found.');
-    }
-}
-
-function clearCookies() {
-    document.cookie.split(";").forEach((cookie) => {
-        const name = cookie.split("=")[0].trim();
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-    });
-    // console.log('Cookies cleared');
-}
-
-function clearLocalStorage() {
-    localStorage.clear();
-    // console.log('Local storage cleared');
-}
-
-function clearSessionStorage() {
-    sessionStorage.clear();
-    // console.log('Session storage cleared');
-}
-
-function reloadAssets() {
-    const images = document.querySelectorAll('img');
-    images.forEach((img) => {
-        const src = img.src.split('?')[0];
-        img.src = `${src}?t=${new Date().getTime()}`; // Add a timestamp to bypass the cache
-    });
-    // console.log('Assets reloaded');
-}
-
-function applySettings() {
-    const totalBalls = document.getElementById('total_balls').value;
     const importBalls = document.getElementById('import_balls').value;
     const exportBalls = document.getElementById('export_balls').value;
 
-    // Validate inputs
-
-    if (!totalBalls || !importBalls || !exportBalls) {
+    if (!importBalls || !exportBalls) {
         alert('Please fill in all fields.');
-        return;
-    }
-
-    if (parseInt(totalBalls, 10) > 100 || parseInt(importBalls, 10) > parseInt(totalBalls, 10) || parseInt(exportBalls, 10) > parseInt(totalBalls, 10)) {
-        alert('Invalid settings. Please check your input.');
         resetSettings(); // Reset the settings
+        return;
+    } else if (exportBalls > importBalls) {
+        alert('Invalid settings. Machine will not work.');
         return; // Stop further execution
+    } else if (importBalls <= 0 || exportBalls <= 0) {
+        alert('Please enter valid numbers for import and export balls.');
+        return;
+    } else {
+        console.log('Starting the game...');
+        document.getElementById('controlpan').style.display = 'none';
+        Main.start({
+            type: 'PHYSX', // Specify the physics engine
+            useWebgpu: false // Enable or disable WebGPU rendering
+        });
+    
+        // Manually hide the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('myModal'));
+        if (modal) {
+            modal.hide();
+        } else {
+            console.error('Modal instance not found.');
+        }
     }
 
-    // Update global variables
-    window.total_balls = parseInt(totalBalls, 10);
+}
+
+function applySettings() {
+    const importBalls = document.getElementById('import_balls').value;
+    const exportBalls = document.getElementById('export_balls').value;
+
     window.import_balls = parseInt(importBalls, 10);
     window.export_balls = parseInt(exportBalls, 10);
-
-    alert('Settings applied successfully!');
 }
 window.applySettings = applySettings;
 
 function resetSettings() {
-    // Reset input fields
-    document.getElementById('total_balls').value = '';
     document.getElementById('import_balls').value = '';
     document.getElementById('export_balls').value = '';
 
-    // Reset global variables
-    window.total_balls = 0;
     window.import_balls = 0;
     window.export_balls = 0;
-
-    // console.log('Settings have been reset.');
 }
 
 function handleClick() {
@@ -121,12 +86,11 @@ function handleClick() {
         applySettings();       // Apply the settings
         onReset();             // Reset textures and settings
         replay();              // Restart the game
-        clearCookies();        // Optional: Clear cookies
-        clearLocalStorage();   // Optional: Clear local storage
-        reloadAssets();        // Optional: Reload cached assets
         debounceTimeout = null;
-    }, 100); // Adjust the delay as needed
+    }, 300); // Adjust the delay as needed
 }
+
+//////////////////////////////////////////////////////////
 
 let tmpCanvas = document.createElement('canvas')
 tmpCanvas.width = tmpCanvas.height = 128
@@ -135,7 +99,6 @@ let bigCanvas = document.createElement('canvas')
 bigCanvas.width = bigCanvas.height = 1024
 //bigCanvas.style.cssText = 'position:absolute;'
 //document.body.appendChild( bigCanvas )
-
 
 demo = () => {
 
@@ -198,10 +161,6 @@ replay = () => {
     phy.setPostUpdate(null);
 
     // Check if total_balls exceeds the limit
-    if (window.total_balls > 100 || export_balls > import_balls) {
-        console.warn('Invalid settings. Machine will not work.');
-        return; // Stop further execution
-    }
 
     // Reset the game state
     game = 'start';
