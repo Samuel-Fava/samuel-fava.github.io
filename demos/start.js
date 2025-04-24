@@ -13,11 +13,11 @@ let tmpTxt = [];
 let breakDeterminism = true;
 let text = null;
 
-let colors = [
-    "#c35839", "#e1c75f", "#4caf50", "#2196f3", "#9c27b0",
-    "#ff5722", "#795548", "#3f51b5", "#00bcd4", "#8bc34a",
-    "#ffc107", "#ffeb3b", "#607d8b", "#9e9e9e", "#673ab7"
-];
+let colors = [];
+for (let i = 0; i < 100; i++) {
+    const hue = (i * 137.5) % 360; // Use golden angle to distribute colors evenly
+    colors.push(`hsl(${hue}, 70%, 50%)`); // Generate HSL colors
+}
 
 let export_balls = parseInt(document.getElementById("export_balls").value, 10) || 0;
 let import_balls = parseInt(document.getElementById("import_balls").value, 10) || 0;
@@ -25,6 +25,32 @@ let import_balls = parseInt(document.getElementById("import_balls").value, 10) |
 document.getElementById('myModal').addEventListener('hidden.bs.modal', () => {
     document.body.focus(); // Move focus to the body
 });
+function clearCookies() {
+    document.cookie.split(";").forEach((cookie) => {
+        const name = cookie.split("=")[0].trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+    });
+    // console.log('Cookies cleared');
+}
+
+function clearLocalStorage() {
+    localStorage.clear();
+    // console.log('Local storage cleared');
+}
+
+function clearSessionStorage() {
+    sessionStorage.clear();
+    // console.log('Session storage cleared');
+}
+
+function reloadAssets() {
+    const images = document.querySelectorAll('img');
+    images.forEach((img) => {
+        const src = img.src.split('?')[0];
+        img.src = `${src}?t=${new Date().getTime()}`; // Add a timestamp to bypass the cache
+    });
+    // console.log('Assets reloaded');
+}
 
 let debounceTimeout;
 
@@ -40,10 +66,7 @@ function startGame() {
     } else if (exportBalls > importBalls) {
         alert('Invalid settings. Machine will not work.');
         return; // Stop further execution
-    } else if (importBalls <= 0 || exportBalls <= 0) {
-        alert('Please enter valid numbers for import and export balls.');
-        return;
-    } else {
+    }  else {
         console.log('Starting the game...');
         document.getElementById('controlpan').style.display = 'none';
         Main.start({
@@ -86,6 +109,9 @@ function handleClick() {
         applySettings();       // Apply the settings
         onReset();             // Reset textures and settings
         replay();              // Restart the game
+        clearCookies();        // Optional: Clear cookies
+        clearLocalStorage();   // Optional: Clear local storage
+        reloadAssets();        // Optional: Reload cached assets
         debounceTimeout = null;
     }, 300); // Adjust the delay as needed
 }
@@ -96,7 +122,7 @@ let tmpCanvas = document.createElement('canvas')
 tmpCanvas.width = tmpCanvas.height = 128
 
 let bigCanvas = document.createElement('canvas')
-bigCanvas.width = bigCanvas.height = 1024
+bigCanvas.width = bigCanvas.height = 128*10
 //bigCanvas.style.cssText = 'position:absolute;'
 //document.body.appendChild( bigCanvas )
 
@@ -271,7 +297,7 @@ haveBall = (name) => {
 
 makeMachine = () => {
 
-    let friction = 0.5;
+    let friction = 0.4;
     let bounce = 0.3;
 
     let meshs = [
@@ -420,8 +446,8 @@ createBallTexture = (n, y, color = "#c35839") => {
     ctx.fillText(n, 64, 64); // Center the text horizontally and vertically
 
     // Copy the texture to the big canvas  
-    let ny = Math.floor(tmpN / 8);
-    let nx = tmpN % 8;
+    let ny = Math.floor(tmpN / 10);
+    let nx = tmpN % 10;
     ctx2.drawImage(tmpCanvas, nx * 128, ny * 128);
     tmpN++;
 
@@ -429,5 +455,5 @@ createBallTexture = (n, y, color = "#c35839") => {
     const texture = new THREE.CanvasTexture(tmpCanvas);
     tmpTxt.push(texture); // Add the texture to tmpTxt
 
-    return [nx / 8, ny / 8, 0];
+    return [nx / 10, ny / 10, 0];
 };
