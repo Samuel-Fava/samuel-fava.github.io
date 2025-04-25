@@ -232,21 +232,33 @@ wantBall = () => {
 }
 
 haveBall = (name) => {
-    game = 'haveBall'
-    open1 = false
-    result.push(name)
+    game = 'haveBall';
+    open1 = false;
+    result.push(name);
+
     if (result.length <= export_balls - 1) {
-        final.push(Number(name.substring(4)) + 1)
-        phy.setTimeout(wantBall, 6000)
+        final.push(Number(name.substring(4)) + 1);
+        phy.setTimeout(wantBall, 6000); // Continue the process
     } else {
-        final.push((Number(name.substring(4)) - 0) + 1)
-        phy.log(result)
+        final.push(Number(name.substring(4)) + 1);
+        phy.log(result);
+
+        // Stop the machine
+        open1 = false; // Ensure the block is closed
+        game = 'stopped'; // Set the game state to stopped
+        phy.setPostUpdate(null); // Stop the update loop
+
+        // Close the block
+        phy.change([
+            { name: 'block1', pos: [0, -4.87 + py, 0] } // Reset block position to closed
+        ]);
+        console.log('Machine stopped after exporting the required number of balls.');
     }
-    text.set(final.join(' '))
-}
+    text.set(final.join(' '));
+};
 
 makeMachine = () => {
-    let friction = 0.4;
+    let friction = 0.5;
     let bounce = 0.3;
     let meshs = [
         'L_roll', 'L_back', 'L_front', 'L_rampe', 'L_pale1', 'L_pale2'
