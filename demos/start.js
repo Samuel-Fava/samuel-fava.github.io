@@ -108,7 +108,7 @@ function handleClick() {
         clearLocalStorage();   // Optional: Clear local storage
         reloadAssets();        // Optional: Reload cached assets
         debounceTimeout = null;
-    }, 300); // Adjust the delay as needed
+    }, 500); // Adjust the delay as needed
 }
 
 //////////////////////////////////////////////////////////
@@ -120,27 +120,43 @@ let bigCanvas = document.createElement('canvas')
 bigCanvas.width = bigCanvas.height = 128 * 10
 
 demo = () => {
+    phy.log('SPACE to restart');
 
-    phy.log('SPACE to restart')
+    // Set a fixed camera view
     phy.view({
-        envmap: 'beach', envblur: 1.0,
-        //ground:false,
-        phi: 20, theta: -20, distance: 14, x: 2, y: 6, z: 0, fov: 70
-    })
-    // setting and start
+        envmap: 'beach', // Environment map
+        envblur: 1.0,    // Blur level for the environment
+        phi: -10,        // Horizontal rotation
+        theta: -23,      // Vertical rotation
+        distance: 13,    // Distance from the target
+        x: 1, y: 3, z: 0, // Target position
+        fov: 44,         // Field of view
+        mouse: false     // Disable mouse interaction (if supported)
+    });
+
+    // Explicitly block mouse events on the canvas
+    const canvas = document.querySelector('canvas'); // Select the canvas element
+    if (canvas) {
+        canvas.style.pointerEvents = 'none'; // Disable all pointer events on the canvas
+    }
+
+    // Setting and start
     phy.set({
         substep: engine === 'OIMO' || engine === 'AMMO' ? 8 : 1,
         gravity: [0, -9.81, 0],
         determinism: false,
         ccd: true,
-    })
-    // add static ground
-    phy.add({ type: 'plane', size: [300, 1, 300], visible: false })
+    });
+
+    // Add static ground
+    phy.add({ type: 'plane', size: [300, 1, 300], visible: false });
+
+    // Load models and start the simulation
     phy.load(['./assets/models/million.glb'], () => {
         onComplete();
         replay(); // Call replay only after onComplete finishes
     });
-}
+};
 
 onComplete = () => {
     model = phy.getMesh('million');
