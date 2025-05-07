@@ -108,7 +108,7 @@ function handleClick() {
         clearLocalStorage();   // Optional: Clear local storage
         reloadAssets();        // Optional: Reload cached assets
         debounceTimeout = null;
-    }, 500); // Adjust the delay as needed
+    }, 444); // Adjust the delay as needed
 }
 
 //////////////////////////////////////////////////////////
