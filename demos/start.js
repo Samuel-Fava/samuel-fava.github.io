@@ -127,14 +127,14 @@ demo = () => {
         envmap: 'beach', // Environment map
         envblur: 1.0,    // Blur level for the environment
         phi: -10,        // Horizontal rotation
-        theta: -23,      // Vertical rotation
-        distance: 13,    // Distance from the target
-        x: 1, y: 3, z: 0, // Target position
+        theta: -18,      // Vertical rotation
+        distance: 14,    // Distance from the target
+        x: 2, y: 4.6, z: 2.7, // Target position
         fov: 44,         // Field of view
         mouse: false     // Disable mouse interaction (if supported)
     });
 
-    // Explicitly block mouse events on the canvas
+    // Explicitly block mouse events on the canvas??
     const canvas = document.querySelector('canvas'); // Select the canvas element
     if (canvas) {
         canvas.style.pointerEvents = 'none'; // Disable all pointer events on the canvas
@@ -149,7 +149,7 @@ demo = () => {
     });
 
     // Add static ground
-    phy.add({ type: 'plane', size: [300, 1, 300], visible: false });
+    phy.add({ type: 'plane', size: [300, 1, 300], visible: true });
 
     // Load models and start the simulation
     phy.load(['./assets/models/million.glb'], () => {
@@ -163,7 +163,7 @@ onComplete = () => {
     makeMachine();
     makeBall();
     text = phy.addText({
-        text: 'Rolly Game',
+        text: 'Lottery Game',
         color: '#606010',
         pos: [0.15, 0.5, 4.0],
         rot: [-90, 0, 0]
