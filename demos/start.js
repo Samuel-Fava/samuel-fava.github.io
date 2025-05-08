@@ -142,7 +142,7 @@ function handleClick() {
         clearLocalStorage();   // Optional: Clear local storage
         reloadAssets();        // Optional: Reload cached assets
         debounceTimeout = null;
-    }, 444); // Adjust the delay as needed
+    }, 100); // Adjust the delay as needed
 }
 
 //////////////////////////////////////////////////////////
@@ -162,9 +162,9 @@ demo = () => {
         envblur: 1.0,    // Blur level for the environment
         phi: -10,        // Horizontal rotation
         theta: -18,      // Vertical rotation
-        distance: 14,    // Distance from the target
+        distance: 10,    // Distance from the target
         x: 2, y: 4.6, z: 2.7, // Target position
-        fov: 44,         // Field of view
+        fov: 70,         // Field of view
         mouse: false     // Disable mouse interaction (if supported)
     });
 
@@ -220,7 +220,7 @@ replay = () => {
     game = 'start';
     // Reset the text object if it exists
     if (text) {
-        text.set('Rolly Game'); // Update the text only if it exists
+        text.set(''); // Update the text only if it exists
     } else {
         console.warn('Text object is not initialized.');
     }
@@ -253,7 +253,7 @@ update = () => {
     let key = phy.getKey()
     if (key[4] === 1) replay()
 
-    a += 1.5
+    a += 1.3
     let r = [
         { name: 'L_pale1', rot: [0, 0, a + 45] },
         { name: 'L_pale2', rot: [0, 0, -a] },
@@ -423,7 +423,11 @@ makeBall = () => {
         });
 
         balls.push(b); // Add ball to the balls array
-        playImportBallSound();
+
+        // Play the import ball sound with a delay for each ball
+        setTimeout(() => {
+            playImportBallSound();
+        }, 500); // Delay increases by 500ms for each ball
     }
 };
 
