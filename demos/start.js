@@ -250,26 +250,30 @@ replay = () => {
 };
 
 update = () => {
-    let key = phy.getKey()
-    if (key[4] === 1) replay()
+    let key = phy.getKey();
+    if (key[4] === 1) replay();
 
-    a += 1.3
+    a += 1.3;
     let r = [
         { name: 'L_pale1', rot: [0, 0, a + 45] },
         { name: 'L_pale2', rot: [0, 0, -a] },
-        // { name: 'L_roll', rot: [0, a, 0] }, // Rotate L_roll
         { name: 'block1', pos: [0, -4.87 + py, open1 ? -1 : 0] },
     ];
-    phy.change(r)
-    if (game !== 'wantBall') return
-    let i = balls.length, b
+    phy.change(r);
+
+    if (game !== 'wantBall') return;
+
+    let i = balls.length, b;
     while (i--) {
-        b = balls[i]
+        b = balls[i];
         if (result.indexOf(b.name) === -1) {
             if (b.position.y < (-5.4 + py)) haveBall(b.name);
         }
     }
-}
+
+    // Update TWEEN.js animations
+    TWEEN.update();
+};
 
 startSimulation = () => {
     if (game === 'start') {
@@ -291,6 +295,21 @@ wantBall = () => {
     open1 = true
 }
 
+function smoothCameraTransition(start, end, duration) {
+    new TWEEN.Tween(start)
+        .to(end, duration) // Transition to the end settings over the specified duration
+        .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function for smooth motion
+        .onUpdate(() => {
+            phy.view({
+                x: start.x,
+                y: start.y,
+                z: start.z,
+                fov: start.fov,
+            });
+        })
+        .start();
+}
+
 haveBall = (name) => {
     game = 'haveBall';
     open1 = false;
@@ -299,26 +318,21 @@ haveBall = (name) => {
     // Play the export ball sound
     playExportBallSound();
 
-    // Zoom in on the export ball
-    phy.view({
-        x: 0, y: 2, z: 5, // Adjust the camera position to focus on the export ball
-        distance: 5,      // Move the camera closer
-        fov: 30,          // Narrow the field of view for a zoomed-in effect
-    });
+    // Smoothly zoom in on the export ball
+    smoothCameraTransition(
+        { x: 2, y: 4.6, z: 2.7, fov: 70 }, // Start position and FOV
+        { x: 0, y: 2, z: 5, fov: 30 },    // End position and FOV
+        2000 // Duration in milliseconds (2 seconds)
+    );
 
-    // After a delay, zoom out to the original view
+    // After a delay, smoothly zoom out to the original view
     setTimeout(() => {
-        phy.view({
-            envmap: 'beach', // Environment map
-            envblur: 1.0,    // Blur level for the environment
-            phi: -10,        // Horizontal rotation
-            theta: -18,      // Vertical rotation
-            distance: 10,    // Distance from the target
-            x: 2, y: 4.6, z: 2.7, // Target position
-            fov: 70,         // Field of view
-            mouse: false     // Disable mouse interaction (if supported)
-        });
-    }, 3000); // Adjust the delay (3 seconds) as needed
+        smoothCameraTransition(
+            { x: 0, y: 2, z: 5, fov: 30 }, // Start position and FOV
+            { x: 2, y: 4.6, z: 2.7, fov: 70 }, // End position and FOV
+            2000 // Duration in milliseconds (2 seconds)
+        );
+    }, 3000); // Delay before zooming out (3 seconds)
 
     if (result.length <= export_balls - 1) {
         final.push(Number(name.substring(4)) + 1);
