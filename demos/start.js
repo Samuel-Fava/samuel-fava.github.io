@@ -166,7 +166,7 @@ onComplete = () => {
         text: 'Lottery Game',
         color: '#606010',
         pos: [0.15, 0.5, 4.0],
-        rot: [-90, 0, 0]
+        rot: [-60, 0, 0]
     });
     phy.setTimeout(activeBall, 3000);
 };
