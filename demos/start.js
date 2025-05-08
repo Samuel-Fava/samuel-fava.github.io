@@ -295,7 +295,30 @@ haveBall = (name) => {
     game = 'haveBall';
     open1 = false;
     result.push(name);
+
+    // Play the export ball sound
     playExportBallSound();
+
+    // Zoom in on the export ball
+    phy.view({
+        x: 0, y: 2, z: 5, // Adjust the camera position to focus on the export ball
+        distance: 5,      // Move the camera closer
+        fov: 30,          // Narrow the field of view for a zoomed-in effect
+    });
+
+    // After a delay, zoom out to the original view
+    setTimeout(() => {
+        phy.view({
+            envmap: 'beach', // Environment map
+            envblur: 1.0,    // Blur level for the environment
+            phi: -10,        // Horizontal rotation
+            theta: -18,      // Vertical rotation
+            distance: 10,    // Distance from the target
+            x: 2, y: 4.6, z: 2.7, // Target position
+            fov: 70,         // Field of view
+            mouse: false     // Disable mouse interaction (if supported)
+        });
+    }, 3000); // Adjust the delay (3 seconds) as needed
 
     if (result.length <= export_balls - 1) {
         final.push(Number(name.substring(4)) + 1);
@@ -353,7 +376,7 @@ makeMachine = () => {
             material: br ? 'plexi2' : 'glass',
             friction: friction,
             restitution: bounce,
-            pos: br ? [0, py, 0] : [8.5, d + py, 0],
+            // pos: br ? [0, py, 0] : [8.5, d + py, 0],
             rot: p ? [0, 0, 45] : [0, 0, 0],
             pos: i > 5 ? [8.5, d + py, 0] : [0, py, 0],
             kinematic: k,
