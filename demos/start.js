@@ -23,6 +23,40 @@ for (let i = 0; i < 100; i++) {
 let export_balls = parseInt(document.getElementById("export_balls").value, 10) || 0;
 let import_balls = parseInt(document.getElementById("import_balls").value, 10) || 0;
 
+let importBallSound = new Audio('./assets/sounds/import_ball.mp3'); // Sound for importing balls
+let exportBallSound = new Audio('./assets/sounds/export_ball.mp3'); // Sound for exporting balls
+let machineRunningSound = new Audio('./assets/sounds/machine_running.mp3'); // Sound for machine running
+
+function playImportBallSound() {
+    importBallSound.currentTime = 0; // Reset the sound to the beginning
+    importBallSound.play().catch((error) => {
+        console.warn('Error playing import ball sound:', error);
+    });
+}
+
+function playExportBallSound() {
+    exportBallSound.currentTime = 0; // Reset the sound to the beginning
+    exportBallSound.play().catch((error) => {
+        console.warn('Error playing export ball sound:', error);
+    });
+}
+
+function startMachineRunningSound() {
+    machineRunningSound.loop = true; // Enable looping for continuous playback
+    machineRunningSound.volume = 0.5; // Set the volume (0.0 to 1.0)
+    machineRunningSound.currentTime = 0; // Reset the sound to the beginning
+    machineRunningSound.play().catch((error) => {
+        console.warn('Error playing machine running sound:', error);
+    });
+}
+
+function stopMachineRunningSound() {
+    if (!machineRunningSound.paused) { // Only pause if the sound is playing
+        machineRunningSound.pause(); // Pause the sound
+        machineRunningSound.currentTime = 0; // Reset the sound to the beginning
+    }
+}
+
 document.getElementById('myModal').addEventListener('hidden.bs.modal', () => {
     document.body.focus(); // Move focus to the body
 });
@@ -219,7 +253,7 @@ update = () => {
     let key = phy.getKey()
     if (key[4] === 1) replay()
 
-    a += 1
+    a += 1.5
     let r = [
         { name: 'L_pale1', rot: [0, 0, a + 45] },
         { name: 'L_pale2', rot: [0, 0, -a] },
@@ -238,9 +272,19 @@ update = () => {
 }
 
 startSimulation = () => {
-    phy.setPostUpdate(update)
-    phy.setTimeout(wantBall, 12000)
-}
+    if (game === 'start') {
+        console.log('Starting simulation...');
+        try {
+            startMachineRunningSound(); // Start the machine running sound
+            phy.setPostUpdate(update); // Set the physics update loop
+            phy.setTimeout(wantBall, 12000); // Schedule the next action after 12 seconds
+        } catch (error) {
+            console.error('Error starting simulation:', error);
+        }
+    } else {
+        console.warn('Simulation cannot start. Game state:', game);
+    }
+};
 
 wantBall = () => {
     game = 'wantBall';
@@ -251,6 +295,7 @@ haveBall = (name) => {
     game = 'haveBall';
     open1 = false;
     result.push(name);
+    playExportBallSound();
 
     if (result.length <= export_balls - 1) {
         final.push(Number(name.substring(4)) + 1);
@@ -263,6 +308,7 @@ haveBall = (name) => {
         open1 = false; // Ensure the block is closed
         game = 'stopped'; // Set the game state to stopped
         phy.setPostUpdate(null); // Stop the update loop
+        stopMachineRunningSound();
 
         // Close the block
         phy.change([
@@ -377,6 +423,7 @@ makeBall = () => {
         });
 
         balls.push(b); // Add ball to the balls array
+        playImportBallSound();
     }
 };
 
