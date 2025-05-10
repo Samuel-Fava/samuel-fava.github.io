@@ -318,22 +318,33 @@ haveBall = (name) => {
     // Play the export ball sound
     playExportBallSound();
 
-    // Smoothly zoom in on the export ball
-    smoothCameraTransition(
-        { x: 2, y: 4.6, z: 2.7, fov: 70 }, // Start position and FOV
-        { x: 0, y: 2, z: 5, fov: 30 },    // End position and FOV
-        2000 // Duration in milliseconds (2 seconds)
-    );
+    // Find the ball object by name
+    const ball = balls.find((b) => b.name === name);
+    if (ball) {
+        // Smoothly expand the ball
+        const initialScale = { x: 0.25, y: 0.25, z: 0.25 }; // Initial scale
+        const expandedScale = { x: 0.5, y: 0.5, z: 0.5 };   // Expanded scale
+        new TWEEN.Tween(initialScale)
+            .to(expandedScale, 1000) // Duration: 1 second
+            .easing(TWEEN.Easing.Quadratic.Out) // Smooth easing
+            .onUpdate(() => {
+                // Update the ball's scale during the animation
+                phy.change([{ name: ball.name, size: [initialScale.x, initialScale.y, initialScale.z] }]);
+            })
+            .start();
+    }
 
-    // After a delay, smoothly zoom out to the original view
-    setTimeout(() => {
+    // Check if this is the first export_ball
+    if (result.length === 1) {
+        // Smoothly zoom in on the first export_ball
         smoothCameraTransition(
-            { x: 0, y: 2, z: 5, fov: 30 }, // Start position and FOV
-            { x: 2, y: 4.6, z: 2.7, fov: 70 }, // End position and FOV
+            { x: 2, y: 4.6, z: 2.7, fov: 70 }, // Start position and FOV
+            { x: 0, y: 2, z: 5, fov: 30 },    // End position and FOV
             2000 // Duration in milliseconds (2 seconds)
         );
-    }, 3000); // Delay before zooming out (3 seconds)
+    }
 
+    // Continue the process if there are more balls to export
     if (result.length <= export_balls - 1) {
         final.push(Number(name.substring(4)) + 1);
         phy.setTimeout(wantBall, 6000); // Continue the process
@@ -353,6 +364,8 @@ haveBall = (name) => {
         ]);
         console.log('Machine stopped after exporting the required number of balls.');
     }
+
+    // Update the text with the final result
     text.set(final.join(' '));
 };
 
