@@ -310,7 +310,12 @@ function smoothCameraTransition(start, end, duration) {
         .start();
 }
 
+let isExporting = false; // Flag to track if a ball is being exported
+
 haveBall = (name) => {
+    if (isExporting) return; // Prevent exporting multiple balls at the same time
+    isExporting = true; // Set the flag to true
+
     game = 'haveBall';
     open1 = false;
     result.push(name);
@@ -330,6 +335,9 @@ haveBall = (name) => {
             .onUpdate(() => {
                 // Update the ball's scale during the animation
                 phy.change([{ name: ball.name, size: [initialScale.x, initialScale.y, initialScale.z] }]);
+            })
+            .onComplete(() => {
+                isExporting = false; // Reset the flag after the animation completes
             })
             .start();
     }
