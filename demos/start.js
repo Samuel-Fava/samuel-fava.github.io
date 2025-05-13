@@ -448,8 +448,8 @@ makeBall = () => {
 
     tmpMat = phy.material({
         name: 'lotoball',
-        roughness: 0.4,
-        metalness: 0.6,
+        roughness: 1.0,
+        metalness: 0.0,
         map: t,
     });
 
