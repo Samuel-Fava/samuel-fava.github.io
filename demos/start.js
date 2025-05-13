@@ -23,16 +23,16 @@ for (let i = 0; i < 100; i++) {
 let export_balls = parseInt(document.getElementById("export_balls").value, 10) || 0;
 let import_balls = parseInt(document.getElementById("import_balls").value, 10) || 0;
 
-let importBallSound = new Audio('./assets/sounds/import_ball.mp3'); // Sound for importing balls
+// let importBallSound = new Audio('./assets/sounds/import_ball.mp3'); // Sound for importing balls
 let exportBallSound = new Audio('./assets/sounds/export_ball.mp3'); // Sound for exporting balls
 let machineRunningSound = new Audio('./assets/sounds/machine_running.mp3'); // Sound for machine running
 
-function playImportBallSound() {
-    importBallSound.currentTime = 0; // Reset the sound to the beginning
-    importBallSound.play().catch((error) => {
-        console.warn('Error playing import ball sound:', error);
-    });
-}
+// function playImportBallSound() {
+//     importBallSound.currentTime = 0; // Reset the sound to the beginning
+//     importBallSound.play().catch((error) => {
+//         console.warn('Error playing import ball sound:', error);
+//     });
+// }
 
 function playExportBallSound() {
     exportBallSound.currentTime = 0; // Reset the sound to the beginning
@@ -142,7 +142,7 @@ function handleClick() {
         clearLocalStorage();   // Optional: Clear local storage
         reloadAssets();        // Optional: Reload cached assets
         debounceTimeout = null;
-    }, 100); // Adjust the delay as needed
+    }, 500); // Adjust the delay as needed
 }
 
 //////////////////////////////////////////////////////////
@@ -347,7 +347,7 @@ haveBall = (name) => {
         // Smoothly zoom in on the first export_ball
         smoothCameraTransition(
             { x: 2, y: 4.6, z: 2.7, fov: 70 }, // Start position and FOV
-            { x: 0, y: 2, z: 5, fov: 30 },    // End position and FOV
+            { x: ball.position.x, y: ball.position.y + 1, z: ball.position.z + 2, fov: 25 }, // Closer position and smaller FOV
             2000 // Duration in milliseconds (2 seconds)
         );
     }
@@ -483,9 +483,9 @@ makeBall = () => {
         balls.push(b); // Add ball to the balls array
 
         // Play the import ball sound with a delay for each ball
-        setTimeout(() => {
-            playImportBallSound();
-        }, 500); // Delay increases by 500ms for each ball
+        // setTimeout(() => {
+        //     playImportBallSound();
+        // }, 500); // Delay increases by 500ms for each ball
     }
 };
 
